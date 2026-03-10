@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# whatMovie
+
+A movie recommendation app that asks you 10 quick questions about your mood, preferences, and vibe — then uses AI to suggest 5 perfect movies for your night.
+
+**Live app:** [movie-rec-iota.vercel.app](https://movie-rec-iota.vercel.app/)
+
+## How It Works
+
+1. Take a 10-question quiz (pace, mood, emotional intensity, era, setting, runtime, etc.)
+2. An LLM analyzes your preferences and picks 5 tailored movie recommendations
+3. Each recommendation is enriched with poster art, ratings, and overviews from TMDB
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router, React 19)
+- **Styling:** Tailwind CSS v4
+- **Animations:** Motion (Framer Motion)
+- **LLM:** OpenRouter API (via OpenAI SDK)
+- **Movie Data:** TMDB API
+- **Validation:** Zod
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+You'll need API keys for:
+- [OpenRouter](https://openrouter.ai/) — for LLM movie recommendations
+- [TMDB](https://www.themoviedb.org/settings/api) — for movie posters, ratings, and metadata
+
+### Setup
+
+```bash
+npm install
+```
+
+Create a `.env.local` file:
+
+```
+OPENROUTER_API_KEY=your_key_here
+TMDB_API_KEY=your_key_here
+```
+
+### Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Other Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run build   # Production build
+npm run lint    # Run ESLint
+```

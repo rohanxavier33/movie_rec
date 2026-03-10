@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { quizAnswersSchema } from "@/lib/schemas";
-import { getRecommendations } from "@/lib/claude";
+import { getRecommendations } from "@/lib/openrouter";
 import { enrichMovies } from "@/lib/tmdb";
 
 export async function POST(request: Request) {
