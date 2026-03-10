@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { jsonrepair } from "jsonrepair";
 import { QuizAnswersPayload, claudeResponseSchema, ClaudeResponse } from "./schemas";
 
 const client = new OpenAI({
@@ -61,24 +62,39 @@ function parseClaudeJSON(text: string): ClaudeResponse {
   if (cleaned.startsWith("```")) {
     cleaned = cleaned.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
   }
-  const parsed = JSON.parse(cleaned);
+  let parsed;
+  try {
+    parsed = JSON.parse(cleaned);
+  } catch {
+    parsed = JSON.parse(jsonrepair(cleaned));
+  }
   return claudeResponseSchema.parse(parsed);
 }
 
 export async function getRecommendations(answers: QuizAnswersPayload): Promise<ClaudeResponse> {
   const prompt = buildPrompt(answers);
 
-  const response = await client.chat.completions.create({
-    model: "arcee-ai/trinity-large-preview:free",
-    max_tokens: 1024,
-    temperature: 0.9,
-    messages: [{ role: "user", content: prompt }],
-  });
+  const maxAttempts = 2;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const response = await client.chat.completions.create({
+      model: "arcee-ai/trinity-large-preview:free",
+      max_tokens: 1024,
+      temperature: 0.9,
+      response_format: { type: "json_object" },
+      messages: [{ role: "user", content: prompt }],
+    });
 
-  const text = response.choices?.[0]?.message?.content;
-  if (!text) {
-    throw new Error("No text response from model");
+    const text = response.choices?.[0]?.message?.content;
+    if (!text) {
+      throw new Error("No text response from model");
+    }
+
+    try {
+      return parseClaudeJSON(text);
+    } catch (err) {
+      if (attempt === maxAttempts) throw err;
+    }
   }
 
-  return parseClaudeJSON(text);
+  throw new Error("Failed to get valid recommendations");
 }
