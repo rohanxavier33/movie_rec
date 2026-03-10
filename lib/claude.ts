@@ -12,7 +12,14 @@ function buildPrompt(answers: QuizAnswersPayload): string {
   if (answers.pace) parts.push(`Preferred pace: ${answers.pace.replace(/_/g, " ")}`);
   if (answers.mood) parts.push(`Mood: ${answers.mood}`);
   if (answers.emotional_intensity) parts.push(`Emotional intensity: ${answers.emotional_intensity}`);
-  if (answers.era) parts.push(`Willing to watch movies from ${answers.era} onwards`);
+  if (answers.era) {
+    const eraMin = 1949; // "before 1950" sentinel value
+    parts.push(
+      Number(answers.era) <= eraMin
+        ? "Willing to watch movies from any era, including before 1950"
+        : `Willing to watch movies from ${answers.era} onwards`
+    );
+  }
   if (answers.acclaimed) parts.push(`Preference: ${answers.acclaimed === "acclaimed" ? "critically acclaimed films" : "crowd-pleasing popular films"}`);
   if (answers.setting) parts.push(`Setting preference: ${answers.setting.replace(/_/g, " ")}`);
   if (answers.runtime) {
